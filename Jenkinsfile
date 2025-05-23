@@ -69,17 +69,17 @@ pipeline {
             }
         }
 
-        stage('Destroy') {
-            when {
-                expression { return params.Destroy }
-            }
-            steps {
-                sh """
-                    cd terraform
-                    terraform destroy -var-file=${params.environment}/${params.environment}.tfvars -auto-approve
-                """
-            }
-        }
+stage('Destroy') {
+    when {
+        expression { return params.Destroy }
+    }
+    steps {
+        sh """
+            cd terraform
+            terraform destroy -var-file=${params.environment}/${params.environment}.tfvars -var="app_version=${params.version}" -auto-approve
+        """
+    }
+}
 
         // stage('EKS Login') {
         //     steps {
