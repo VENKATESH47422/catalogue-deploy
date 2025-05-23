@@ -28,7 +28,32 @@ pipeline {
                 """
             }
         }
+        stage('Init') {
+        steps {
+                sh """
+                    cd terraform
+                    terraform init --backend-config=${params.environment}/backend.tf -reconfigure
+                """
+                }
+            }
 
+        stage('Plan') {
+        steps {
+                sh """
+                    cd terraform
+                    terraform plan -var-file=${params.environment}/${params.environment}.tfvars -var="app_version=${params.version}"
+                """
+                }
+            }
+
+        stage('Apply') {
+        steps {
+                sh """
+                    cd terraform
+                    terraform apply -var-file=${params.environment}/${params.environment}.tfvars -var="app_version=${params.version}" -auto-approve
+                """
+                }
+            }    
         // stage('EKS Login') {
         //         steps {
         //             script{
